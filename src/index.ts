@@ -5,6 +5,7 @@ import { Processor } from 'windicss/lib'
 import { resolveConfig } from '@/utils/config'
 import { defaultKeyOrder } from '@/utils/order'
 import Parser from '@/utils/parser'
+import Combiner from '@/utils/combiner'
 
 export default class WindiSorter {
   public windiClassNamesOrder: RequiredOptions['windiClassNamesOrder']
@@ -43,6 +44,8 @@ export default class WindiSorter {
       this.removeDuplicateClassNames
     )
 
-    return sorterElements
+    const combinedElements = new Combiner(sorterElements).combine()
+
+    return combinedElements
   }
 }
