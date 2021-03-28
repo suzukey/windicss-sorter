@@ -50,3 +50,38 @@ describe('Unknown Sort', () => {
     expect(sortedClassList).toBe(correctClasses)
   })
 })
+
+describe('Has Important Sort', () => {
+  const windiSorter = new WindiSorter()
+
+  it('TailwindCSS syntax', () => {
+    const classes =
+      'z-10 container !sm:hover:font-medium text-left md:!text-center justify-center'
+    const correctClasses =
+      'container justify-center text-left z-10 sm:hover:!font-medium md:!text-center'
+
+    const sortedClassList = windiSorter.sortClassNames(classes)
+
+    expect(sortedClassList).toBe(correctClasses)
+  })
+
+  it('WindiCSS syntax & In parentheses', () => {
+    const classes = 'bg-white sm:hover:(!font-medium bg-gray-100) !font-light'
+    const correctClasses =
+      'bg-white !font-light sm:hover:(bg-gray-100 !font-medium)'
+
+    const sortedClassList = windiSorter.sortClassNames(classes)
+
+    expect(sortedClassList).toBe(correctClasses)
+  })
+
+  it('WindiCSS syntax & Out parentheses', () => {
+    const classes = 'bg-white  !font-light'
+    const correctClasses =
+      'bg-white !font-light sm:hover:(!bg-gray-100 !font-medium)'
+
+    const sortedClassList = windiSorter.sortClassNames(classes)
+
+    expect(sortedClassList).toBe(correctClasses)
+  })
+})

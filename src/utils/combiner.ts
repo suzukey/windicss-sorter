@@ -21,13 +21,14 @@ export default class Combiner {
     return this.combinedElements
   }
 
-  private _combine(el: Element, vars: string[]): void {
+  private _combine(el: Element, vars: string[], imp = false): void {
     const variants = vars.concat(el.variants)
+    const importance = el.important || imp
 
     // If Element type Group
     if (el.variants.length && Array.isArray(el.content)) {
       el.content.forEach((element) => {
-        this._combine(element, variants)
+        this._combine(element, variants, importance)
       })
     }
     // Element with variants
@@ -35,7 +36,7 @@ export default class Combiner {
       const e: Element = {
         content: el.content,
         variants: [],
-        important: el.important,
+        important: importance,
       }
 
       const groupEl = this.combinedElements.find((resEl) =>
