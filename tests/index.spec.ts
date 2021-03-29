@@ -59,9 +59,9 @@ describe('Has Important Sort', () => {
     const windiSorter = new WindiSorter({ useVariantGroup: false })
 
     const classes =
-      'z-10 container !sm:hover:font-medium text-left md:!text-center justify-center'
+      '!z-10 container !sm:hover:font-medium text-left md:!text-center justify-center'
     const correct =
-      'container justify-center text-left z-10 sm:hover:!font-medium md:!text-center'
+      'container justify-center text-left !z-10 sm:hover:!font-medium md:!text-center'
 
     const sortedClassList = windiSorter.sortClassNames(classes)
 

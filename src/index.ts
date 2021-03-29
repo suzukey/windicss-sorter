@@ -7,6 +7,7 @@ import { defaultKeyOrder } from '@/utils/order'
 import Parser from '@/utils/parser'
 import Combiner from '@/utils/combiner'
 import Separator from '@/utils/separator'
+import Outputter from '@/utils/outputter'
 
 export default class WindiSorter {
   public windiClassNamesOrder: RequiredOptions['windiClassNamesOrder']
@@ -53,6 +54,16 @@ export default class WindiSorter {
       unknownClasses
     ).separate()
 
-    return { separatedElements, unknownClasses }
+    // TODO: Sort here
+    const { windiElements, unknownElements } = separatedElements
+
+    const mixedElements =
+      this.unknownClassNamesPosition === 'start'
+        ? unknownElements.concat(windiElements)
+        : windiElements.concat(unknownElements)
+
+    const output = new Outputter(mixedElements).output(this.useVariantGroup)
+
+    return output
   }
 }
