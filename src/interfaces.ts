@@ -1,5 +1,10 @@
 import type { Element as WindiElement } from 'windicss/types/interfaces'
 
+export interface Separate {
+  windiElements: Element[]
+  unknownElements: Element[]
+}
+
 export interface Element {
   content: string | Element[] | undefined
   variants: WindiElement['variants']
