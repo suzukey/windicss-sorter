@@ -47,17 +47,21 @@ export default class WindiSorter {
     const unknownClasses = this.processor.interpret(classNames).ignored
     const windiVariants = this.getWindiVariants()
 
+    // Parsing elements
     const sorterElements = new Parser(classNames).parse(
       this.removeDuplicateClassNames
     )
 
+    // Combine variant groups
     const combinedElements = new Combiner(sorterElements).combine()
 
+    // Separate Windi classes from unknown classes
     const separatedElements = new Separator(
       combinedElements,
       unknownClasses
     ).separate()
 
+    // Give weights to determine the order of the classes
     const weighter = new Weighter(
       this.priorityOrderList,
       this.sortOrder,
@@ -70,16 +74,21 @@ export default class WindiSorter {
       separatedElements.unknownElements
     )
 
+    // Sort classes based on weight
     const sorter = new Sorter()
     const windiElements = sorter.sort(windiElementsWithWeight)
     const unknownElements = sorter.sort(unknownElementsWithWeight)
 
-    const mixedElements =
+    // Concatenate what was processed separately
+    const concatenatedElements =
       this.unknownClassNamesPosition === 'start'
         ? unknownElements.concat(windiElements)
         : windiElements.concat(unknownElements)
 
-    const output = new Outputter(mixedElements).output(this.useVariantGroup)
+    // Output as a class string
+    const output = new Outputter(concatenatedElements).output(
+      this.useVariantGroup
+    )
 
     return output
   }
