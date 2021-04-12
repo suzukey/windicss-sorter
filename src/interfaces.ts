@@ -11,24 +11,32 @@ export interface Element {
   important: WindiElement['important']
 }
 
+export interface ElementWithWeight extends Element {
+  weight: number
+}
+
 export interface RequiredOptions {
-  windiClassNamesOrder: 'asc' | 'desc' | Array<string>
+  priorityOrderList: Array<string>
+  sortOrder: 'asc' | 'desc'
+  sortUnknowns: boolean
   unknownClassNamesPosition: 'start' | 'end'
-  sortUnknownClassNames: 'asc' | 'desc' | 'disable'
   removeDuplicateClassNames: boolean
   useVariantGroup: boolean
   config: string | Record<string, unknown> | undefined
 }
 
 export interface Options {
-  /** __Order of windi classes__ */
-  windiClassNamesOrder?: RequiredOptions['windiClassNamesOrder']
+  /** __List of classes to be sorted preferentially__ */
+  priorityOrderList?: RequiredOptions['priorityOrderList']
+
+  /** __Standard sort order__ */
+  sortOrder?: RequiredOptions['sortOrder']
+
+  /** __Whether to sort unknown classes__ */
+  sortUnknowns?: RequiredOptions['sortUnknowns']
 
   /** __Position of unknown classes__ */
   unknownClassNamesPosition?: RequiredOptions['unknownClassNamesPosition']
-
-  /** __Sort unknown classes__ */
-  sortUnknownClassNames?: RequiredOptions['sortUnknownClassNames']
 
   /** __Remove duplicate classes__
    *

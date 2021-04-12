@@ -1,28 +1,31 @@
 import type { Options, RequiredOptions } from '@/interfaces'
 
 import { Processor } from 'windicss/lib'
-
 import { resolveConfig } from '@/utils/config'
 import { defaultKeyOrder } from '@/utils/order'
 import Parser from '@/utils/parser'
 import Combiner from '@/utils/combiner'
 import Separator from '@/utils/separator'
+import Weighter from '@/utils/weighter'
 import Sorter from '@/utils/sorter'
 import Outputter from '@/utils/outputter'
 
 export default class WindiSorter {
-  public windiClassNamesOrder: RequiredOptions['windiClassNamesOrder']
+  public priorityOrderList: RequiredOptions['priorityOrderList']
+  public sortOrder: RequiredOptions['sortOrder']
+  public sortUnknowns: RequiredOptions['sortUnknowns']
   public unknownClassNamesPosition: RequiredOptions['unknownClassNamesPosition']
-  public sortUnknownClassNames: RequiredOptions['sortUnknownClassNames']
   public removeDuplicateClassNames: RequiredOptions['removeDuplicateClassNames']
   public useVariantGroup: RequiredOptions['useVariantGroup']
   public config: RequiredOptions['config']
   private processor: Processor
 
   constructor(opts: Options = {}) {
-    this.windiClassNamesOrder = opts.windiClassNamesOrder || defaultKeyOrder
+    this.priorityOrderList = opts.priorityOrderList || defaultKeyOrder
+    this.sortOrder = opts.sortOrder || 'asc'
+    this.sortUnknowns =
+      typeof opts.sortUnknowns === 'boolean' ? opts.sortUnknowns : true
     this.unknownClassNamesPosition = opts.unknownClassNamesPosition || 'end'
-    this.sortUnknownClassNames = opts.sortUnknownClassNames || 'asc'
     this.removeDuplicateClassNames =
       typeof opts.removeDuplicateClassNames === 'boolean'
         ? opts.removeDuplicateClassNames
@@ -40,7 +43,7 @@ export default class WindiSorter {
     return windiVariants
   }
 
-  public sortClassNames(classNames: string) {
+  public sortClassNames(classNames: string): string {
     const unknownClasses = this.processor.interpret(classNames).ignored
     const windiVariants = this.getWindiVariants()
 
@@ -55,15 +58,21 @@ export default class WindiSorter {
       unknownClasses
     ).separate()
 
-    const sorter = new Sorter(
-      this.windiClassNamesOrder,
-      windiVariants,
-      this.sortUnknownClassNames
+    const weighter = new Weighter(
+      this.priorityOrderList,
+      this.sortOrder,
+      windiVariants
     )
-    const windiElements = sorter.sortWindi(separatedElements.windiElements)
-    const unknownElements = sorter.sortUnknown(
+    const windiElementsWithWeight = weighter.weighting(
+      separatedElements.windiElements
+    )
+    const unknownElementsWithWeight = weighter.weighting(
       separatedElements.unknownElements
     )
+
+    const sorter = new Sorter()
+    const windiElements = sorter.sort(windiElementsWithWeight)
+    const unknownElements = sorter.sort(unknownElementsWithWeight)
 
     const mixedElements =
       this.unknownClassNamesPosition === 'start'
