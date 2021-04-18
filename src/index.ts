@@ -43,7 +43,7 @@ export default class WindiSorter {
     return windiVariants
   }
 
-  public sortClassNames(classNames: string): string {
+  public sortClassNames(classNames: string) {
     const unknownClasses = this.processor.interpret(classNames).ignored
     const windiVariants = this.getWindiVariants()
 
@@ -62,11 +62,7 @@ export default class WindiSorter {
     ).separate()
 
     // Give weights to determine the order of the classes
-    const weighter = new Weighter(
-      this.priorityOrderList,
-      this.sortOrder,
-      windiVariants
-    )
+    const weighter = new Weighter(this.priorityOrderList, windiVariants)
     const windiElementsWithWeight = weighter.weighting(
       separatedElements.windiElements
     )
@@ -92,6 +88,6 @@ export default class WindiSorter {
       this.useVariantGroup
     )
 
-    return output
+    return concatenatedElements
   }
 }

@@ -2,17 +2,14 @@ import type { Element, ElementWithWeight } from '@/interfaces'
 
 export default class Weighter {
   private priorityOrderList: Array<string>
-  private sortOrder: 'asc' | 'desc'
-  private variants: Array<string>
+  private windiVariants: Array<string>
 
   constructor(
     priorityOrderList: Weighter['priorityOrderList'],
-    sortOrder: Weighter['sortOrder'],
-    variants: Weighter['variants']
+    windiVariants: Weighter['windiVariants']
   ) {
     this.priorityOrderList = priorityOrderList
-    this.sortOrder = sortOrder
-    this.variants = variants
+    this.windiVariants = windiVariants
   }
 
   public weighting(elements: Element[]): ElementWithWeight[] {
@@ -21,13 +18,66 @@ export default class Weighter {
     return weightElements
   }
 
-  private _weighting(el: Element): ElementWithWeight {
-    if (Array.isArray(el.content)) {
-      el.content.map((el) => this._weighting(el))
+  private _weighting({
+    content,
+    variants,
+    important,
+  }: Element): ElementWithWeight {
+    const contentWeight = this.computeContentWeight(content)
+    const variantsWeight = this.computeVariantsWeight(variants)
+
+    return {
+      content: Array.isArray(content)
+        ? content.map((el) => this._weighting(el))
+        : content,
+      variants,
+      important,
+      contentWeight,
+      variantsWeight,
+    }
+  }
+
+  private computeContentWeight(content: Element['content']): number {
+    if (typeof content !== 'string') {
+      return 0
+    }
+    const utility = this.pickUtility(content)
+
+    const prioritizedWeight = this.priorityOrderList.indexOf(utility) + 1
+    const unprioritizedWeight = this.computeUnprioritizedWeight()
+
+    const contentWeight = prioritizedWeight
+      ? prioritizedWeight
+      : unprioritizedWeight
+
+    return contentWeight
+  }
+
+  private computeVariantsWeight(variants: Element['variants']): BigInt {
+    const bVariantsWeight = this.windiVariants
+      .map((variant) => (variants.includes(variant) ? '1' : '0'))
+      .reverse()
+      .join('')
+
+    const variantsWeight = BigInt('0b' + bVariantsWeight)
+
+    return variantsWeight
+  }
+
+  private pickUtility(content: string) {
+    const utility = content.match(/\w+/)
+
+    if (Array.isArray(utility)) {
+      return utility[0] || ''
     }
 
-    const weightElement = { ...el, weight: 1 }
+    return ''
+  }
 
-    return weightElement
+  private computeUnprioritizedWeight() {
+    const prioritizedCount = this.priorityOrderList.length
+    const len = String(prioritizedCount).length
+
+    return 10 ** (len + 1)
   }
 }

@@ -12,7 +12,8 @@ export interface Element {
 }
 
 export interface ElementWithWeight extends Element {
-  weight: number
+  contentWeight: number
+  variantsWeight: BigInt
 }
 
 export interface RequiredOptions {
