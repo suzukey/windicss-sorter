@@ -59,7 +59,12 @@ export default class Weighter {
       .reverse()
       .join('')
 
-    const variantsWeight = BigInt('0b' + bVariantsWeight)
+    const unknownVariants = variants.filter(
+      (variant) => !this.windiVariants.includes(variant)
+    )
+    const unknownWeight = unknownVariants.length ? '1' : '0'
+
+    const variantsWeight = BigInt('0b' + unknownWeight + bVariantsWeight)
 
     return variantsWeight
   }
