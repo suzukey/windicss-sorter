@@ -71,7 +71,7 @@ export default class WindiSorter {
     )
 
     // Sort classes based on weight
-    const sorter = new Sorter()
+    const sorter = new Sorter(this.sortOrder, windiVariants)
     const windiElements = sorter.sort(windiElementsWithWeight)
     const unknownElements = this.sortUnknowns
       ? sorter.sort(unknownElementsWithWeight)
@@ -88,6 +88,6 @@ export default class WindiSorter {
       this.useVariantGroup
     )
 
-    return concatenatedElements
+    return output
   }
 }
