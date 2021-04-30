@@ -2,7 +2,6 @@ import type { Options, RequiredOptions } from '@/interfaces'
 
 import { Processor } from 'windicss/lib'
 import { resolveConfig } from '@/utils/config'
-import { defaultKeyOrder } from '@/utils/order'
 import Parser from '@/utils/parser'
 import Combiner from '@/utils/combiner'
 import Separator from '@/utils/separator'
@@ -21,7 +20,7 @@ export default class WindiSorter {
   private processor: Processor
 
   constructor(opts: Options = {}) {
-    this.priorityOrderList = opts.priorityOrderList || defaultKeyOrder
+    this.priorityOrderList = opts.priorityOrderList || []
     this.sortOrder = opts.sortOrder || 'asc'
     this.sortUnknowns =
       typeof opts.sortUnknowns === 'boolean' ? opts.sortUnknowns : true

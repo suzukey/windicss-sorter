@@ -1,4 +1,4 @@
-export const defaultKeyOrder: Array<string> = [
+export const utilitiesOrder: Array<string> = [
   'container',
   'space',
   'divide',
