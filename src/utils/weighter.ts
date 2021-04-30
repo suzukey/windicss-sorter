@@ -54,19 +54,27 @@ export default class Weighter {
   }
 
   private computeVariantsWeight(variants: Element['variants']): BigInt {
-    const bVariantsWeight = this.windiVariants
-      .map((variant) => (variants.includes(variant) ? '1' : '0'))
+    const variantsWeight = this.windiVariants
+      .slice()
       .reverse()
-      .join('')
+      .reduce((acc, value, index) => {
+        if (variants.includes(value)) {
+          return acc + BigInt(1)
+        }
+        if (acc > 0) {
+          return acc + BigInt('0b1' + '0'.repeat(index))
+        }
+        return acc
+      }, BigInt(0))
 
     const unknownVariants = variants.filter(
       (variant) => !this.windiVariants.includes(variant)
     )
-    const unknownWeight = unknownVariants.length ? '1' : '0'
+    const unknownWeight = unknownVariants.length
+      ? BigInt('0b1' + '0'.repeat(this.windiVariants.length))
+      : BigInt('0')
 
-    const variantsWeight = BigInt('0b' + unknownWeight + bVariantsWeight)
-
-    return variantsWeight
+    return variantsWeight + unknownWeight
   }
 
   private pickUtility(content: string) {
