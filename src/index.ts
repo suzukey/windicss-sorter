@@ -42,7 +42,7 @@ export default class WindiSorter {
     return windiVariants
   }
 
-  public sortClassNames(classNames: string) {
+  public sortClassNames(classNames: string): string {
     const unknownClasses = this.processor.interpret(classNames).ignored
     const windiVariants = this.getWindiVariants()
 
