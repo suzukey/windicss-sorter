@@ -13,15 +13,31 @@ export default class Sorter {
   }
 
   public sort(elements: ElementWithWeight[]): Element[] {
-    // TODO: Sort deep elements
-    const res = elements.slice().sort((a, b) => {
+    const elm = elements.map((el) => this._sortDeeper(el))
+    const res = elm.slice().sort((a, b) => {
       return this.compareElement(a, b)
     })
 
     return res
   }
 
-  // private sortVariants(el: ElementWithWeight): ElementWithWeight {}
+  private _sortDeeper(element: ElementWithWeight): ElementWithWeight {
+    if (Array.isArray(element.content)) {
+      element.content.map((el) => this._sortDeeper(el))
+      element.content.sort((a, b) => {
+        return this.compareElement(a, b)
+      })
+    }
+    this.sortVariants(element)
+    return element
+  }
+
+  private sortVariants(el: ElementWithWeight): ElementWithWeight {
+    el.variants.sort(
+      (a, b) => this.windiVariants.indexOf(a) - this.windiVariants.indexOf(b)
+    )
+    return el
+  }
 
   private compareElement(a: ElementWithWeight, b: ElementWithWeight): number {
     if (a.variantsWeight < b.variantsWeight) return -1

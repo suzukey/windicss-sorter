@@ -12,6 +12,7 @@ export interface Element {
 }
 
 export interface ElementWithWeight extends Element {
+  content: string | ElementWithWeight[] | undefined
   contentWeight: number
   variantsWeight: BigInt
 }
