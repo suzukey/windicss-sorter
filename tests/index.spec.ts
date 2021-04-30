@@ -1,8 +1,9 @@
+import { Options } from '@/interfaces'
 import { compareClasses } from './utils'
 
 describe('Simple Sort', () => {
   it('Without group syntax', () => {
-    const options = { useVariantGroup: false }
+    const options: Options = { useVariantGroup: false }
     const target = 'z-50 z-10 container text-left md:text-center justify-center'
     const correct =
       'container justify-center text-left z-10 z-50 md:text-center'
@@ -11,7 +12,7 @@ describe('Simple Sort', () => {
   })
 
   it('With group syntax', () => {
-    const options = { useVariantGroup: true }
+    const options: Options = { useVariantGroup: true }
     const target = 'bg-white sm:hover:(font-medium bg-gray-100) font-light'
     const correct = 'bg-white font-light sm:hover:(bg-gray-100 font-medium)'
 
@@ -21,7 +22,7 @@ describe('Simple Sort', () => {
 
 describe('Unknown Sort', () => {
   it('Without group syntax', () => {
-    const options = { useVariantGroup: false }
+    const options: Options = { useVariantGroup: false }
     const target =
       'z-50 test z-10 container text-left md:text-center md:test justify-center'
     const correct =
@@ -31,11 +32,11 @@ describe('Unknown Sort', () => {
   })
 
   it('With group syntax', () => {
-    const options = { useVariantGroup: true }
+    const options: Options = { useVariantGroup: true }
     const target =
       'bg-white sm:hover:(font-medium bg-gray-100 test) font-light test test:(test text-bold)'
     const correct =
-      'bg-white font-light sm:hover:(bg-gray-100 font-medium) test sm:hover:(test) test:(text-bold test)'
+      'bg-white font-light sm:hover:(bg-gray-100 font-medium) test sm:hover:(test) test:(test text-bold)'
 
     compareClasses(target, correct, options)
   })
@@ -43,7 +44,7 @@ describe('Unknown Sort', () => {
 
 describe('Has Important Sort', () => {
   it('Without group syntax', () => {
-    const options = { useVariantGroup: false }
+    const options: Options = { useVariantGroup: false }
     const target =
       '!z-10 container !sm:hover:font-medium text-left md:!text-center justify-center'
     const correct =
@@ -53,7 +54,7 @@ describe('Has Important Sort', () => {
   })
 
   it('With group syntax & In parentheses', () => {
-    const options = { useVariantGroup: true }
+    const options: Options = { useVariantGroup: true }
     const target = 'bg-white sm:hover:(!font-medium bg-gray-100) !font-light'
     const correct = 'bg-white !font-light sm:hover:(bg-gray-100 !font-medium)'
 
@@ -61,7 +62,7 @@ describe('Has Important Sort', () => {
   })
 
   it('With group syntax & Out parentheses', () => {
-    const options = { useVariantGroup: true }
+    const options: Options = { useVariantGroup: true }
     const target = 'bg-white !sm:hover:(font-medium bg-gray-100) !font-light'
     const correct = 'bg-white !font-light sm:hover:(!bg-gray-100 !font-medium)'
 
