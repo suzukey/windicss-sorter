@@ -1,10 +1,13 @@
 {
   "name": "windicss-sorter",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Sort WindiCSS classes",
   "keywords": [
     "windicss",
     "tailwindcss"
+  ],
+  "files": [
+    "dist"
   ],
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -20,7 +23,8 @@
   "scripts": {
     "dev": "npm run build -- --watch",
     "build": "tsup src/index.ts --dts --format cjs,esm",
-    "test": "jest --coverage --silent=false"
+    "test": "jest --coverage --silent=false",
+    "prepublish": "npm run build"
   },
   "dependencies": {
     "windicss": "^2.5.0"
