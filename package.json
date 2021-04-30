@@ -23,7 +23,6 @@
     "test": "jest --coverage --silent=false"
   },
   "dependencies": {
-    "find-up": "^5.0.0",
     "windicss": "^2.5.0"
   },
   "devDependencies": {
