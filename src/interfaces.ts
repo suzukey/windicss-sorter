@@ -1,21 +1,54 @@
-import type { Element as WindiElement } from 'windicss/types/interfaces'
+import type {
+  Config as WindiConfig,
+  Element as WindiElement,
+} from 'windicss/types/interfaces'
 
-export interface Separate {
-  windiElements: Element[]
-  unknownElements: Element[]
-}
+// -- Parsed ----------
 
-export interface Element {
-  content: string | Element[] | undefined
+export interface ParsedElement {
+  content: string | ParsedElement[]
   variants: WindiElement['variants']
   important: WindiElement['important']
+  type: WindiElement['type']
 }
 
-export interface ElementWithWeight extends Element {
-  content: string | ElementWithWeight[] | undefined
+// -- Base ----------
+
+export interface SorterElement {
+  content: string | InnerElement[]
+  variants: ParsedElement['variants']
+  important: ParsedElement['important']
+  type: ParsedElement['type']
+}
+
+export interface InnerElement {
+  content: string
+  variants: SorterElement['variants']
+  important: SorterElement['important']
+  type: SorterElement['type']
+}
+
+// -- Separated ----------
+
+export interface SeparatedElements {
+  windiElements: SorterElement[]
+  unknownElements: SorterElement[]
+}
+
+// -- WithWeight ----------
+
+export interface ElementWithWeight extends SorterElement {
+  content: string | InnerElementWithWeight[]
   contentWeight: number
   variantsWeight: BigInt
 }
+
+export interface InnerElementWithWeight extends InnerElement {
+  contentWeight: number
+  variantsWeight: BigInt
+}
+
+// -- Options ----------
 
 export interface RequiredOptions {
   priorityOrderList: Array<string>
@@ -24,7 +57,7 @@ export interface RequiredOptions {
   unknownClassNamesPosition: 'start' | 'end'
   removeDuplicateClassNames: boolean
   useVariantGroup: boolean
-  config: string | Record<string, unknown> | undefined
+  config?: string | WindiConfig
 }
 
 export interface Options {
