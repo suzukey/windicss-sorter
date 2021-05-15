@@ -18,36 +18,25 @@ export default class Separator {
     const windiElements: SorterElement[] = []
     const unknownElements: SorterElement[] = []
 
-    this.sorterElements.forEach((el) => {
-      // Element with variants
-      if (Array.isArray(el.content)) {
-        el.content.forEach((innerEl) => {
-          const target = this.isWindiUtility(innerEl.content, el.variants)
-            ? windiElements
-            : unknownElements
-
-          const groupEl = target.find((targetEl) =>
-            isSameArray(targetEl.variants, el.variants)
-          )
-          // Already exist in target array
-          if (groupEl && Array.isArray(groupEl.content)) {
-            groupEl.content.push(innerEl)
-          } else {
-            target.push({
-              content: [innerEl],
-              variants: el.variants,
-              important: false,
-            })
-          }
-        })
-      }
-      // Element without variants
-      else if (typeof el.content === 'string') {
-        const target = this.isWindiUtility(el.content)
+    this.sorterElements.forEach((sorterEl) => {
+      sorterEl.content.forEach((innerEl) => {
+        const target = this.isWindiUtility(innerEl.content, sorterEl.variants)
           ? windiElements
           : unknownElements
-        target.push(el)
-      }
+
+        const groupEl = target.find((targetEl) =>
+          isSameArray(targetEl.variants, sorterEl.variants)
+        )
+
+        if (groupEl) {
+          groupEl.content.push(innerEl)
+        } else {
+          target.push({
+            content: [innerEl],
+            variants: sorterEl.variants,
+          })
+        }
+      })
     })
 
     return {
