@@ -1,5 +1,5 @@
 import type { Element as WindiElement } from 'windicss/types/interfaces'
-import type { Element } from '@/interfaces'
+import type { ParsedElement } from '@/interfaces'
 
 import { ClassParser } from 'windicss/utils/parser'
 
@@ -10,7 +10,7 @@ export default class Parser {
     this.classNames = classNames
   }
 
-  public parse(removeDuplicates = true): Element[] {
+  public parse(removeDuplicates = true): ParsedElement[] {
     const windiElements = new ClassParser(this.classNames).parse(
       removeDuplicates
     )
@@ -19,7 +19,11 @@ export default class Parser {
     return ast
   }
 
-  private _parse({ content, variants, important }: WindiElement): Element {
+  private _parse({
+    content,
+    variants,
+    important,
+  }: WindiElement): ParsedElement {
     if (Array.isArray(content)) {
       return {
         content: content.map((el) => this._parse(el)),
@@ -28,6 +32,6 @@ export default class Parser {
       }
     }
 
-    return { content, variants, important }
+    return { content: content || '', variants, important }
   }
 }

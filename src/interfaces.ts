@@ -9,7 +9,6 @@ export interface ParsedElement {
   content: string | ParsedElement[]
   variants: WindiElement['variants']
   important: WindiElement['important']
-  type: WindiElement['type']
 }
 
 // -- Base ----------
@@ -18,14 +17,12 @@ export interface SorterElement {
   content: string | InnerElement[]
   variants: ParsedElement['variants']
   important: ParsedElement['important']
-  type: ParsedElement['type']
 }
 
 export interface InnerElement {
   content: string
   variants: SorterElement['variants']
   important: SorterElement['important']
-  type: SorterElement['type']
 }
 
 // -- Separated ----------
