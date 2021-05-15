@@ -46,13 +46,13 @@ export default class WindiSorter {
     const unknownClasses = this.processor.interpret(classNames).ignored
     const windiVariants = this.getWindiVariants()
 
-    // Parsing elements
-    const sorterElements = new Parser(classNames).parse(
+    // Parse class names
+    const parsedElements = new Parser(classNames).parse(
       this.removeDuplicateClassNames
     )
 
     // Combine variant groups
-    const combinedElements = new Combiner(sorterElements).combine()
+    const combinedElements = new Combiner(parsedElements).combine()
 
     // Separate Windi classes from unknown classes
     const separatedElements = new Separator(

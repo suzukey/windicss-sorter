@@ -1,56 +1,59 @@
-import type { Element } from '@/interfaces'
+import type { InnerElement, ParsedElement, SorterElement } from '@/interfaces'
 
 import { isSameArray } from '@/utils'
 
 export default class Combiner {
-  private sorterElements: Element[]
-  private combinedElements: Element[]
+  private parsedElements: ParsedElement[]
+  private combinedElements: SorterElement[]
 
-  constructor(sorterElements: Element[]) {
-    this.sorterElements = sorterElements
+  constructor(parsedElements: ParsedElement[]) {
+    this.parsedElements = parsedElements
     this.combinedElements = []
   }
 
-  public combine(): Element[] {
+  public combine(): SorterElement[] {
     this.combinedElements = []
 
-    this.sorterElements.forEach((el) => {
-      this._combine(el, [])
+    this.parsedElements.forEach((el) => {
+      this._combine(el)
     })
 
     return this.combinedElements
   }
 
-  private _combine(el: Element, vars: string[], imp = false): void {
-    const variants = vars.concat(el.variants)
-    const importance = el.important || imp
+  private _combine(
+    { content, variants, important }: ParsedElement,
+    vars: string[] = [],
+    imp = false
+  ): void {
+    const combineVariants = vars.concat(variants)
+    const importance = important || imp
 
     // If Element type Group
-    if (el.variants.length && Array.isArray(el.content)) {
-      el.content.forEach((element) => {
-        this._combine(element, variants, importance)
+    if (Array.isArray(content)) {
+      content.forEach((element) => {
+        this._combine(element, combineVariants, importance)
       })
     }
     // Element with variants
-    else if (variants.length) {
-      const e: Element = {
-        content: el.content,
-        variants: [],
+    else {
+      const innerEl: InnerElement = {
+        content: content,
         important: importance,
       }
 
-      const groupEl = this.combinedElements.find((resEl) =>
-        isSameArray(resEl.variants, variants)
+      const groupEl = this.combinedElements.find((targetEl) =>
+        isSameArray(targetEl.variants, combineVariants)
       )
-      if (groupEl && Array.isArray(groupEl.content)) {
-        groupEl.content.push(e)
+
+      if (groupEl) {
+        groupEl.content.push(innerEl)
       } else {
-        this.combinedElements.push({ content: [e], variants, important: false })
+        this.combinedElements.push({
+          content: [innerEl],
+          variants: combineVariants,
+        })
       }
-    }
-    // Element without variants
-    else {
-      this.combinedElements.push(el)
     }
   }
 }

@@ -1,4 +1,8 @@
-import type { Element, ElementWithWeight } from '@/interfaces'
+import type {
+  SorterElement,
+  ElementWithWeight,
+  InnerElement,
+} from '@/interfaces'
 
 export default class Weighter {
   private priorityOrderList: Array<string>
@@ -12,35 +16,28 @@ export default class Weighter {
     this.windiVariants = windiVariants
   }
 
-  public weighting(elements: Element[]): ElementWithWeight[] {
-    const weightElements = elements.map((el) => this._weighting(el))
+  public weighting(elements: SorterElement[]): ElementWithWeight[] {
+    const weightElements = elements.map((sorterEl) => {
+      const weighterContent = Array.isArray(sorterEl.content)
+        ? sorterEl.content.map((innerEl) => {
+            return {
+              ...innerEl,
+              contentWeight: this.computeContentWeight(innerEl.content),
+            }
+          })
+        : sorterEl.content
+
+      return {
+        content: weighterContent,
+        variants: sorterEl.variants,
+        variantsWeight: this.computeVariantsWeight(sorterEl.variants),
+      }
+    })
 
     return weightElements
   }
 
-  private _weighting({
-    content,
-    variants,
-    important,
-  }: Element): ElementWithWeight {
-    const contentWeight = this.computeContentWeight(content)
-    const variantsWeight = this.computeVariantsWeight(variants)
-
-    return {
-      content: Array.isArray(content)
-        ? content.map((el) => this._weighting(el))
-        : content,
-      variants,
-      important,
-      contentWeight,
-      variantsWeight,
-    }
-  }
-
-  private computeContentWeight(content: Element['content']): number {
-    if (typeof content !== 'string') {
-      return 0
-    }
+  private computeContentWeight(content: InnerElement['content']): number {
     const utility = this.pickUtility(content)
 
     const prioritizedWeight = this.priorityOrderList.indexOf(utility) + 1
@@ -53,7 +50,7 @@ export default class Weighter {
     return contentWeight
   }
 
-  private computeVariantsWeight(variants: Element['variants']): BigInt {
+  private computeVariantsWeight(variants: SorterElement['variants']): BigInt {
     const variantsWeight = this.windiVariants
       .slice()
       .reverse()
