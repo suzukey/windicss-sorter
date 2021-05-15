@@ -15,7 +15,7 @@ export default class Combiner {
     this.combinedElements = []
 
     this.parsedElements.forEach((el) => {
-      this._combine(el, [])
+      this._combine(el)
     })
 
     return this.combinedElements
@@ -23,7 +23,7 @@ export default class Combiner {
 
   private _combine(
     { content, variants, important }: ParsedElement,
-    vars: string[],
+    vars: string[] = [],
     imp = false
   ): void {
     const combineVariants = vars.concat(variants)
@@ -36,32 +36,24 @@ export default class Combiner {
       })
     }
     // Element with variants
-    else if (variants.length) {
-      const e: InnerElement = {
+    else {
+      const innerEl: InnerElement = {
         content: content,
         important: importance,
       }
 
-      const groupEl = this.combinedElements.find((resEl) =>
-        isSameArray(resEl.variants, variants)
+      const groupEl = this.combinedElements.find((targetEl) =>
+        isSameArray(targetEl.variants, combineVariants)
       )
-      if (groupEl && Array.isArray(groupEl.content)) {
-        groupEl.content.push(e)
+
+      if (groupEl) {
+        groupEl.content.push(innerEl)
       } else {
         this.combinedElements.push({
-          content: [e],
-          variants,
-          important: false,
+          content: [innerEl],
+          variants: combineVariants,
         })
       }
-    }
-    // Element without variants
-    else {
-      this.combinedElements.push({
-        content,
-        variants,
-        important,
-      })
     }
   }
 }

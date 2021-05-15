@@ -14,14 +14,13 @@ export interface ParsedElement {
 // -- Base ----------
 
 export interface SorterElement {
-  content: string | InnerElement[]
+  content: InnerElement[]
   variants: ParsedElement['variants']
-  important: ParsedElement['important']
 }
 
 export interface InnerElement {
   content: string
-  important: SorterElement['important']
+  important: ParsedElement['important']
 }
 
 // -- Separated ----------
@@ -34,14 +33,12 @@ export interface SeparatedElements {
 // -- WithWeight ----------
 
 export interface ElementWithWeight extends SorterElement {
-  content: string | InnerElementWithWeight[]
-  contentWeight: number
+  content: InnerElementWithWeight[]
   variantsWeight: BigInt
 }
 
 export interface InnerElementWithWeight extends InnerElement {
   contentWeight: number
-  variantsWeight: BigInt
 }
 
 // -- Options ----------
