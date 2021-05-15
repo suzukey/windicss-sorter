@@ -45,10 +45,7 @@ export default class Separator {
     }
   }
 
-  private isWindiUtility(
-    className: string,
-    variants: Array<string> = []
-  ): boolean {
+  private isWindiUtility(className: string, variants: Array<string>): boolean {
     const isUnknown = this.unknownClassList.find((cls) => {
       const clsHeads = cls.split(':')
       const clsName = clsHeads.pop()
