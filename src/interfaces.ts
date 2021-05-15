@@ -21,7 +21,6 @@ export interface SorterElement {
 
 export interface InnerElement {
   content: string
-  variants: SorterElement['variants']
   important: SorterElement['important']
 }
 

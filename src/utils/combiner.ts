@@ -39,7 +39,6 @@ export default class Combiner {
     else if (variants.length) {
       const e: InnerElement = {
         content: content,
-        variants: [],
         important: importance,
       }
 
