@@ -1,12 +1,12 @@
 import WindiSorter from '@/index'
 import { Options } from '@/interfaces'
 
-export function compareClasses(
+export async function compareClasses(
   target: string,
   correct: string,
   options: Options
-): void {
-  const windiSorter = new WindiSorter(options)
+): Promise<void> {
+  const windiSorter = await WindiSorter.init(options)
 
   const sortedClassList = windiSorter.sortClassNames(target)
 

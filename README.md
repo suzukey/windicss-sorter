@@ -13,7 +13,7 @@ yarn add -D windicss-sorter
 ```ts
 import WindiSorter from 'windicss-sorter'
 
-const windiSorter = new WindiSorter()
+const windiSorter = new WindiSorter.init()
 
 const target = 'bg-white sm:hover:(font-medium bg-gray-100) font-light'
 
@@ -25,14 +25,13 @@ console.log(sorted)
 
 ## Options
 
-| Option                    | Type               | Default |
-| :------------------------ | :----------------- | :------ |
-| priorityOrderList         | Array<string>      | []      |
-| sortOrder                 | 'asc' \| 'desc'    | 'asc'   |
-| sortUnknowns              | boolean            | true    |
-| unknownClassNamesPosition | 'start' \| 'end'   | 'end'   |
-| removeDuplicateClassNames | boolean            | true    |
-| useVariantGroup           | boolean            | true    |
-| config                    | not supported yet. |
+| Option                    | Type             | Default |
+| :------------------------ | :--------------- | :------ |
+| priorityOrderList         | Array<string>    | []      |
+| sortOrder                 | 'asc' \| 'desc'  | 'asc'   |
+| sortUnknowns              | boolean          | true    |
+| unknownClassNamesPosition | 'start' \| 'end' | 'end'   |
+| removeDuplicateClassNames | boolean          | true    |
+| useVariantGroup           | boolean          | true    |
 
 ---

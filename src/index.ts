@@ -1,13 +1,19 @@
 import type { Options, RequiredOptions } from '@/interfaces'
 
-import { Processor } from 'windicss/lib'
-import { resolveConfig } from '@/utils/config'
+import {
+  createUtils,
+  UserOptions,
+  WindiPluginUtils,
+} from '@windicss/plugin-utils'
+
 import Parser from '@/utils/parser'
 import Combiner from '@/utils/combiner'
 import Separator from '@/utils/separator'
 import Weighter from '@/utils/weighter'
 import Sorter from '@/utils/sorter'
 import Outputter from '@/utils/outputter'
+
+const NAME = 'windicss-sorter'
 
 export default class WindiSorter {
   public priorityOrderList: RequiredOptions['priorityOrderList']
@@ -17,9 +23,9 @@ export default class WindiSorter {
   public removeDuplicateClassNames: RequiredOptions['removeDuplicateClassNames']
   public useVariantGroup: RequiredOptions['useVariantGroup']
   public config: RequiredOptions['config']
-  private processor: Processor
+  private utils: WindiPluginUtils
 
-  constructor(opts: Options = {}) {
+  constructor(opts: Options = {}, utils: WindiSorter['utils']) {
     this.priorityOrderList = opts.priorityOrderList || []
     this.sortOrder = opts.sortOrder || 'asc'
     this.sortUnknowns =
@@ -32,18 +38,27 @@ export default class WindiSorter {
     this.useVariantGroup =
       typeof opts.useVariantGroup === 'boolean' ? opts.useVariantGroup : true
 
-    const options = resolveConfig()
-    this.processor = new Processor(options)
+    this.utils = utils
+  }
+
+  public static async init(
+    opts: Options = {},
+    userOptions: UserOptions = {}
+  ): Promise<WindiSorter> {
+    const utils = createUtils(userOptions, { name: NAME })
+    const sorter = new WindiSorter(opts, utils)
+    await sorter.utils.init()
+    return sorter
   }
 
   private getWindiVariants(): Array<string> {
-    const variants = Object.keys(this.processor.resolveVariants() ?? {})
+    const variants = Object.keys(this.utils.processor.resolveVariants() ?? {})
     const windiVariants = [...variants.map((value) => value)]
     return windiVariants
   }
 
   public sortClassNames(classNames: string): string {
-    const unknownClasses = this.processor.interpret(classNames).ignored
+    const unknownClasses = this.utils.processor.interpret(classNames).ignored
     const windiVariants = this.getWindiVariants()
 
     // Parse class names
